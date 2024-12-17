@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counter demo</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color:lightgray;
+  margin: 0;
+}
+
+.container {
+  text-align: center;
+  background-color:aliceblue;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+.display {
+  margin-bottom: 20px;
+}
+
+#number {
+  font-size: 30px;
+  color: #007BFF;
+}
+
+.buttons button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 5px;
+  border: none;
+  background-color:green;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.buttons button:hover {
+  background-color:black;
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Interactive Counter Demo</h2>
+    <div class="display">
+      <p>Value: <span id="number">0</span></p>
+    </div>
+    <div class="buttons">
+      <button onclick="increase()">More (+)</button>
+      <button onclick="decrease()">Less (-)</button>
+      <button onclick="reset()">Reset</button>
+    </div>
+  </div>
+
+  <script src="./counter.js"></script>
+</body>
+</html>
