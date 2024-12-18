@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Game</title>
+    <link rel="stylesheet" href="dice.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1> Dice Game </h1><br>
+
+        <!-- Input Section -->
+        <div id="input-section">
+            <div class="input-fields">
+                <label for="player1">Player 1 Name: </label>
+                <input type="text" id="player1" placeholder="Enter Player 1 name" required>
+            </div><br>
+            <div class="input-fields">
+                <label for="player2">Player 2 Name: </label>
+                <input type="text" id="player2" placeholder="Enter Player 2 name" required>
+            </div><br>
+            <div class="input-fields">
+                <label for="rounds">Number of Rounds: </label>
+                <input type="number" id="rounds" min="1" placeholder="e.g., 5" required>
+            </div><br>
+            <button id="start-btn">Start Game</button>
+        </div>
+
+        <!-- Game Section -->
+        <div id="game-section" class="hidden"><br>
+            <p><span id="player1-name"></span> Score: <span id="player1-score">0</span></p><br>
+            <p><span id="player2-name"></span> Score: <span id="player2-score">0</span></p><br>
+
+            <div class="dice-display">
+                <div>
+                    <p id="player1-dice-label"></p>
+                    <div id="player1-dice">🎲</div>
+                </div>
+                <div>
+                    <p id="player2-dice-label"></p>
+                    <div id="player2-dice">🎲</div>
+                </div>
+            </div>
+
+            <p id="round-info"></p>
+            <button id="roll-btn" class="roll-btn" disabled>Roll Dice</button>
+            <button id="reset-btn" class="reset-btn">Reset</button>
+            <h2 id="winner"></h2>
+        </div>
+    </div>
+    <script src="dice.js"></script>
+</body>
+</html>

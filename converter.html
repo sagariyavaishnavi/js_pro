@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <link rel="stylesheet" href="converter.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Physical Quantity Converter</h1>
+        <form id="converterForm">
+            <label for="quantity">Choose a quantity:</label>
+            <select id="quantity" onchange="updateUnits()">
+                <option value="" disabled selected>--Select--</option>
+                <option value="temperature">Temperature</option>
+                <option value="weight">Weight</option>
+                <option value="length">Length</option>
+                <option value="area">Area</option>
+                <option value="speed">Speed</option>
+            </select>
+
+            <label for="fromUnit">From:</label>
+            <select id="fromUnit">
+                
+                <option value="celsius">Celsius</option>
+                <option value="fahrenheit">Fahrenheit</option>
+                <option value="kelvin">Kelvin</option>
+                <option value="kg">Kilograms</option>
+                <option value="pounds">Pounds</option>
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+            </select>
+
+            <label for="toUnit">To:</label>
+            <select id="toUnit">
+                
+                <option value="fahrenheit">Fahrenheit</option>
+                <option value="celsius">Celsius</option>
+                <option value="kelvin">Kelvin</option>
+                <option value="pounds">Pounds</option>
+                <option value="kg">Kilograms</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="meters">Meters</option>
+            </select>
+
+            <input type="number" id="inputValue" placeholder="Enter value" />
+            <button type="button" onclick="convert()">Convert</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="converter.js"></script>
+</body>
+</html>
