@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Classification</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+</head>
+<body style="background-color: #1E1E2F; color: #E0E0F8; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+
+    <h1 style="margin-top: 20px; font-size: 32px; color:lightskyblue">Cars Classifier</h1>
+
+    
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 20px;">
+      <label 
+            style="
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                width: 120px; 
+                height: 120px; 
+                border: 2px dashed #6C3483; 
+                border-radius: 8px; 
+                cursor: pointer; 
+                transition: border-color 0.3s, background-color 0.3s; 
+                background-color: #2C2C3C;"
+            onmouseover="this.style.borderColor='#A020F0'; this.style.backgroundColor='#3A3A4C';" 
+            onmouseout="this.style.borderColor='#6C3483'; this.style.backgroundColor='#2C2C3C';"
+            >
+            <span style="font-size: 40px; color: lightblue;">+</span>
+            <input type="file" style="display: none;" id="fileInput" onchange="handleFileUpload(event)"/>
+          </label>
+          <span style="margin-top: 10px; font-size: 14px; color: #C4C4E2;">Add Image</span>
+        </div>
+        
+        <img id="previewImage" style="display:none; height: 200px; width: 200px; border: 2px solid #6C3483; border-radius: 8px;" />
+        <span style="margin-top: 10px; font-size: 14px; color: #C4C4E2;">Upload a file and get classification</span>
+        
+        <button 
+        onclick="handleClassify(event)" 
+        style="
+            margin-top: 20px; 
+            padding: 10px 20px; 
+            font-size: 16px; 
+            color: #FFFFFF; 
+            background-color: #A020F0; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s;"
+        onmouseover="this.style.backgroundColor='#6C3483';" 
+        onmouseout="this.style.backgroundColor='#A020F0';"
+        >
+        Classify
+      </button>
+      <div id="myResult" style="margin-bottom: 20px; font-size: 18px; color: #9A9ABF;">
+        <h2>Result</h2>
+        <div id="myResult" style="margin-bottom: 20px; font-size: 18px; color: #9A9ABF;">Scanning....</div>
+      </div>
+      
+    <script src="script.js"></script>
+</body>
+</html>
