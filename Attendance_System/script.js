@@ -1,124 +1,94 @@
-// Global variables
 let classifier;
 let isModelLoaded = false;
+const statusElement = document.getElementById('status');
+const webcamFeed = document.getElementById('webcam-feed');
+const startWebcamButton = document.getElementById('start-webcam');
+const stopWebcamButton = document.getElementById('stop-webcam');
+const resultsSection = document.getElementById('results');
+const attendanceStatus = document.getElementById('attendance-status');
 
-// DOM Elements
-const modelStatus = document.getElementById('model-status');
-const imageInput = document.getElementById('image-input');
-const previewSection = document.querySelector('.preview-section');
-const previewImage = document.getElementById('preview-image');
-const loadingSpinner = document.getElementById('loading-spinner');
-const predictions = document.getElementById('predictions');
-const resetButton = document.getElementById('reset-button');
-
-// Initialize MobileNet classifier
 async function initializeModel() {
+    if (statusElement) statusElement.textContent = 'Loading model...';
     try {
         classifier = await ml5.imageClassifier('https://teachablemachine.withgoogle.com/models/AfrrtJQc3/', () => {
             isModelLoaded = true;
+            if (statusElement) statusElement.textContent = 'Model loaded successfully!';
+            console.log('Model loaded successfully!');
         });
     } catch (error) {
-        modelStatus.textContent = 'Error loading model. Please refresh the page.';
-        modelStatus.style.backgroundColor = '#f8d7da';
-        modelStatus.style.color = '#721c24';
         console.error('Error loading model:', error);
+        if (statusElement) statusElement.textContent = 'Error loading model.';
     }
 }
 
-// Handle file selection
-imageInput.addEventListener('change', handleImageUpload);
-
-// Handle drag and drop
-const uploadButton = document.querySelector('.upload-button');
-uploadButton.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadButton.style.backgroundColor = '#e3e3e3';
-});
-
-uploadButton.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    uploadButton.style.backgroundColor = '#f8f9fa';
-});
-
-uploadButton.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadButton.style.backgroundColor = '#f8f9fa';
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        handleImageUpload({ target: { files: e.dataTransfer.files } });
-    }
-});
-
-// Handle image upload
-async function handleImageUpload(event) {
-    const file = event.target.files[0];
-    
-    if (!file) return;
-    
-    // Validate file type
-    if (!file.type.match('image.*')) {
-        alert('Please upload an image file');
+async function startWebcam() {
+    if (!isModelLoaded) {
+        alert('Model is not loaded yet.');
         return;
     }
-
-    // Show preview section
-    previewSection.classList.remove('hidden');
-    loadingSpinner.classList.remove('hidden');
-    predictions.innerHTML = '';
-
-    // Create and display image preview
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        previewImage.src = e.target.result;
-        previewImage.onload = async function() {
-            if (isModelLoaded) {
-                await classifyImage();
-            } else {
-                alert('Please wait for the model to load');
-            }
-        };
-    };
-    reader.readAsDataURL(file);
-}
-
-// Classify the image
-async function classifyImage() {
     try {
-        const results = await classifier.classify(previewImage);
-        displayResults(results);
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        webcamFeed.srcObject = stream;
+        webcamFeed.classList.remove('hidden');
+        resultsSection.classList.remove('hidden');
+        startWebcamButton.classList.add('hidden');
+        stopWebcamButton.classList.remove('hidden');
+        classifyWebcam();
     } catch (error) {
-        console.error('Error classifying image:', error);
-        predictions.innerHTML = '<p class="error">Error classifying image. Please try again.</p>';
-    } finally {
-        loadingSpinner.classList.add('hidden');
+        console.error('Error accessing webcam:', error);
+        alert('Error accessing webcam. Please allow camera permissions.');
     }
 }
 
-// Display classification results
-function displayResults(results) {
-    predictions.innerHTML = '';
-    
-    results.forEach((result, index) => {
-        const confidence = (result.confidence * 100).toFixed(2);
-        const predictionEl = document.createElement('div');
-        predictionEl.className = 'prediction-item';
-        predictionEl.innerHTML = `
-            <div class="label">${result.label}</div>
-            <div class="confidence">
-                <div class="confidence-bar" style="width: ${confidence}%"></div>
-                <span>${confidence}%</span>
-            </div>
-        `;
-        predictions.appendChild(predictionEl);
-    });
+async function classifyWebcam() {
+    if (!webcamFeed.srcObject || !isModelLoaded) return;
+
+    try {
+        const results = await classifier.classify(webcamFeed);
+
+        console.log('Classification results:', results);
+
+        if (results.length > 0) {
+            const { label, confidence } = results[0];
+            console.log(`Label: ${label}, Confidence: ${confidence}`);
+
+            if (confidence > 0.4) { 
+                if (label === 'Vaishnavi') {
+                    attendanceStatus.textContent = `Detected: ${label} (${(confidence * 100).toFixed(2)}%)`;
+                    attendanceStatus.style.color = '#2ecc71'; 
+                } else if (label === 'Others') {
+                    attendanceStatus.textContent = `Detected: ${label} (${(confidence * 100).toFixed(2)}%)`;
+                    attendanceStatus.style.color = '#e74c3c'; 
+                }
+            } else {
+                attendanceStatus.textContent = 'Uncertain detection.';
+                attendanceStatus.style.color = '#f1c40f'; 
+            }
+        } else {
+            attendanceStatus.textContent = 'No face detected.';
+            attendanceStatus.style.color = '#e74c3c'; 
+        }
+    } catch (error) {
+        console.error('Error classifying webcam feed:', error);
+    }
+
+    requestAnimationFrame(classifyWebcam); 
 }
 
-// Reset the form
-resetButton.addEventListener('click', () => {
-    imageInput.value = '';
-    previewSection.classList.add('hidden');
-    predictions.innerHTML = '';
-});
+function stopWebcam() {
+    const stream = webcamFeed.srcObject;
+    if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+    }
+    webcamFeed.srcObject = null;
+    webcamFeed.classList.add('hidden');
+    resultsSection.classList.add('hidden');
+    stopWebcamButton.classList.add('hidden');
+    startWebcamButton.classList.remove('hidden');
+}
 
-// Initialize the model when the page loads
+if (startWebcamButton) startWebcamButton.addEventListener('click', startWebcam);
+if (stopWebcamButton) stopWebcamButton.addEventListener('click', stopWebcam);
+
 initializeModel();
